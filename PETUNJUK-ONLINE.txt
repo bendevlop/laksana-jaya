@@ -1,0 +1,59 @@
+PANDUAN ONLINE — LAKSANA JAYA
+================================
+
+Apa yang disiapkan
+- index.html, style.css, script.js: website publik + formulir pesanan + dashboard admin.
+- config.js: URL/kunci publik Supabase dan nomor WhatsApp admin.
+- supabase-setup.sql: tabel database dan aturan akses (RLS).
+- Website bisa diunggah ke hosting statis seperti Netlify, Vercel, GitHub Pages, atau hosting cPanel.
+
+LANGKAH 1 — BUAT DATABASE ONLINE
+1. Buka https://supabase.com/ lalu buat akun dan project baru.
+2. Buka SQL Editor di project Supabase.
+3. Salin seluruh isi file supabase-setup.sql, tempel, lalu tekan Run.
+4. Buka Project Settings > API (atau Connect). Salin Project URL dan anon/publishable key.
+   JANGAN gunakan service_role/secret key di website.
+
+LANGKAH 2 — ATUR WEBSITE
+1. Buka config.js.
+2. Ganti:
+   SUPABASE_URL dengan Project URL Supabase.
+   SUPABASE_ANON_KEY dengan anon/publishable key.
+   WHATSAPP_ADMIN dengan nomor WhatsApp Anda, format 62xxxxxxxxxx tanpa tanda +.
+   BUSINESS_NAME jika ingin mengganti nama usaha.
+3. Simpan file.
+
+LANGKAH 3 — BUAT LOGIN ADMIN
+1. Di Supabase buka Authentication > Users > Add user, buat email dan password admin.
+2. Salin UUID/ID user yang baru dibuat.
+3. Buka SQL Editor dan jalankan query berikut dengan mengganti UUID contoh:
+   insert into public.profiles (id, is_admin)
+   values ('UUID-ADMIN-ANDA', true)
+   on conflict (id) do update set is_admin = true;
+4. Jangan membagikan akun admin. Jangan membuka pendaftaran publik jika tidak diperlukan.
+
+LANGKAH 4 — UPLOAD KE HOSTING
+Pilihan mudah: Netlify
+1. Pastikan semua file berada dalam satu folder: index.html, style.css, script.js, config.js.
+2. Buka https://app.netlify.com/ dan login.
+3. Pilih Add new site / Deploy manually (label menu dapat berubah).
+4. Seret folder atau ZIP yang berisi file website ke area deploy.
+5. Buka URL website yang diberikan Netlify dan uji pesanan.
+   Untuk hosting cPanel, unggah semua file ke folder public_html.
+   Jangan lupa file config.js harus ikut diunggah.
+
+LANGKAH 5 — UJI
+1. Buka website publik di HP lain, isi formulir, kirim pesanan.
+2. Pastikan ringkasan terbuka di WhatsApp dan tekan Kirim.
+3. Login Admin di website dengan email/password Supabase.
+4. Pesanan harus muncul di dashboard admin; coba ubah status.
+5. Jika gagal, cek Console browser dan pastikan SQL RLS serta profil is_admin sudah benar.
+
+CATATAN DAN BATASAN
+- Database pesanan sekarang online dan bisa diakses lintas perangkat dengan akun admin.
+- WhatsApp menggunakan click-to-chat; pelanggan tetap menekan tombol Kirim.
+- File asli tidak diunggah ke server; pelanggan perlu melampirkannya manual di WhatsApp.
+- Website tidak memerlukan API WhatsApp berbayar untuk tautan click-to-chat.
+- Supabase anon/publishable key memang tampil di browser; keamanan bergantung pada RLS. Jangan pernah memasukkan service_role/secret key.
+- Aturan SQL ini membolehkan publik membuat pesanan tanpa login, tetapi tidak membaca data pesanan. Batasi spam sebelum dipakai secara luas (misalnya CAPTCHA/rate limit).
+- Sebelum penggunaan bisnis yang serius, pertimbangkan kebijakan privasi, backup, validasi, perlindungan spam, dan penyimpanan file aman.
