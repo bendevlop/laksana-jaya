@@ -438,25 +438,56 @@ $("#trackingForm").addEventListener("submit", async event => {
     return;
   }
 
-  try {
-    const snapshot = await getDoc(doc(db, "pelacakan", id));
+   try {
+    // 1. Coba cari di koleksi pelacakan umum terlebih dahulu
+    let snapshot = await getDoc(doc(db, "pelacakan", id));
+    let data = snapshot.data();
+    let namaLayanan = data?.layanan || "-";
+    let statusPesanan = data?.status || "Menunggu konfirmasi";
+    let isWO = false;
 
+    // 2. Jika tidak ketemu di pelacakan umum, coba cari di pelacakan khusus WO
     if (!snapshot.exists()) {
-      result.innerHTML =
-        '<div class="track-result">Nomor pesanan belum ditemukan. Periksa kembali nomor pesanan Anda.</div>';
-      return;
+      snapshot = await getDoc(doc(db, "booking_wo_tracking", id));
+      if (snapshot.exists()) {
+        data = snapshot.data();
+        namaLayanan = "Wedding Organizer";
+        statusPesanan = data.status || "Menunggu konfirmasi";
+        isWO = true;
+      } else {
+        // Jika kedua koleksi tidak menemukan ID tersebut
+        result.innerHTML =
+          '<div class="track-result">Nomor pesanan atau booking belum ditemukan. Periksa kembali nomor Anda.</div>';
+        return;
+      }
     }
 
-    const data = snapshot.data();
+    // 3. Tampilkan hasil pelacakan ke pelanggan
     result.innerHTML = `
-      <div class="track-result">
-        <p><strong>Nomor pesanan:</strong> ${escapeHTML(data.orderId || id)}</p>
-        <p><strong>Layanan:</strong> ${escapeHTML(data.layanan || "-")}</p>
-        <p><strong>Status:</strong>
-          <span class="status-pill">${escapeHTML(data.status || "Menunggu konfirmasi")}</span>
+      <div class="track-result" style="border-left: 4px solid var(--wine);">
+        <p><strong>Nomor Pelacakan:</strong> ${escapeHTML(id)}</p>
+        <p><strong>Jenis Layanan:</strong> ${escapeHTML(namaLayanan)}</p>
+        <p><strong>Status Real-time:</strong> 
+          <span class="status-pill">${escapeHTML(statusPesanan)}</span>
         </p>
+        ${isWO ? `<p class="small muted" style="margin-top: 8px;">* Status booking Anda diperbarui langsung oleh Wedding Planner kami.</p>` : ""}
       </div>
     `;
+
+    // 4. Sinkronkan ke riwayat lokal di browser pelanggan jika ada
+    const local = readLocalOrders();
+    const found = local.find(order => order.id === id);
+
+    if (found) {
+      found.status = statusPesanan;
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(local));
+      renderHistory();
+    }
+  } catch (error) {
+    console.error("Gagal melacak pesanan:", error);
+    result.innerHTML =
+      '<div class="track-result">Tidak dapat memuat status. Periksa koneksi internet Anda.</div>';
+  }
 
     const local = readLocalOrders();
     const found = local.find(order => order.id === id);
