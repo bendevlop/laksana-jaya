@@ -178,7 +178,6 @@ orderForm.addEventListener("submit", async event => {
     await setDoc(doc(db, "pelacakan", order.id), {
       orderId: order.id,
       layanan: order.layanan,
-      nama: order.nama,
       status: order.status,
       updatedAt: serverTimestamp()
     });
