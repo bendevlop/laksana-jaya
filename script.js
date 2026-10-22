@@ -237,8 +237,9 @@ function createOrderId() {
   return `LJ-${ymd}-${random}`;
 }
 
+
 function formatWA(order) {
-  return [
+  const message = [
     "PESANAN BARU - LAKSANA JAYA DIGITAL",
     "",
     `Nomor pesanan: ${order.id}`,
@@ -253,13 +254,19 @@ function formatWA(order) {
     `Catatan tambahan: ${order.catatan || "-"}`,
     "",
     "Mohon konfirmasi pesanan ini."
-  ].join("\n");
+  ];
+
   if (["Edit Dokumen", "Jasa Ketik"].includes(order.layanan)) {
-  message +=
-    "\n\nBERKAS: Saya akan melampirkan file " +
-    "yang akan diedit/diketik langsung di chat ini.";
+    message.push(
+      "",
+      "BERKAS DOKUMEN",
+      "Saya akan melampirkan file yang ingin diedit atau diketik langsung di chat WhatsApp ini."
+    );
+  }
+
+  return message.join("\n");
 }
-}
+
 
 orderForm.addEventListener("submit", async event => {
   event.preventDefault();
