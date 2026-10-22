@@ -413,3 +413,4 @@ $("#refreshHistory").addEventListener("click", renderHistory);
 
 renderServiceFields();
 renderHistory();
+updateFileWhatsAppNotice();
