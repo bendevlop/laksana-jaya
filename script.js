@@ -501,6 +501,57 @@ $("#trackingForm").addEventListener("submit", async event => {
       '<div class="track-result">Tidak dapat memuat status. Periksa koneksi dan Firestore Rules.</div>';
   }
 });
+async function fetchActiveWoPackages() {
+  try {
+    const { collection, getDocs, query, where } = await import("https://gstatic.com");
+    
+    // Mengambil paket dari database yang diset 'aktif' oleh admin
+    const q = query(collection(db, "wo_paket"), where("aktif", "==", true));
+    const querySnapshot = await getDocs(q);
+    
+    const activePackages = ["Pilih Paket"];
+    const packagePrices = {}; 
+
+    querySnapshot.forEach((doc) => {
+      const pkg = doc.data();
+      activePackages.push(pkg.nama);
+      packagePackagesPrices[pkg.nama] = pkg.harga; 
+    });
+
+    activePackages.push("Custom Paket");
+
+    // Suntikkan data paket ke dalam pilihan formulir secara dinamis
+    if (serviceFields["Wedding Organizer"]) {
+      const paketField = serviceFields["Wedding Organizer"].find(f => f.name === "paketNama");
+      if (paketField) {
+        paketField.options = activePackages;
+      }
+    }
+
+    // Mengunci input harga otomatis saat nama paket dipilih oleh pelanggan
+    document.addEventListener("change", (e) => {
+      if (e.target && e.target.name === "paketNama") {
+        const selectedPackage = e.target.value;
+        const priceInput = document.querySelector('input[name="hargaPaket"]');
+        if (priceInput) {
+          if (packagePrices[selectedPackage]) {
+            priceInput.value = packagePrices[selectedPackage];
+            priceInput.readOnly = true; 
+          } else {
+            priceInput.value = "";
+            priceInput.readOnly = false; 
+          }
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error("Gagal sinkronisasi paket WO:", error);
+  }
+}
+
+// Eksekusi fungsi saat script dimuat pertama kali
+fetchActiveWoPackages();
 
 $("#refreshHistory").addEventListener("click", renderHistory);
 
