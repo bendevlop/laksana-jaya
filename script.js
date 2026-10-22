@@ -187,7 +187,14 @@ function escapeHTML(value = "") {
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   })[char]);
 }
+function updateFileWhatsAppNotice() {
+  const notice = document.querySelector("#fileWhatsAppNotice");
+  const service = document.querySelector("#serviceSelect")?.value;
 
+  if (!notice) return;
+
+  notice.hidden = !["Edit Dokumen", "Jasa Ketik"].includes(service);
+}
 function renderHistory() {
   const orders = readLocalOrders();
   $("#totalPesanan").textContent = orders.length;
