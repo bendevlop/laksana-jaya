@@ -124,3 +124,31 @@ textarea { resize: vertical; }
   .footer { grid-template-columns: 1fr; }
   .copyright { grid-column: auto; }
 }
+
+.form-section-title {
+  grid-column: 1 / -1;
+  margin: 18px 0 2px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eadce1;
+  color: #681f37;
+  font-size: 1rem;
+}
+
+#serviceSpecificFields {
+  margin-top: 18px;
+}
+
+#serviceSpecificFields .form-grid {
+  margin-bottom: 12px;
+}
+
+#serviceSpecificFields label {
+  min-width: 0;
+}
+
+#serviceSpecificFields input,
+#serviceSpecificFields select,
+#serviceSpecificFields textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
