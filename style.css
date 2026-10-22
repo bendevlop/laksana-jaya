@@ -152,3 +152,24 @@ textarea { resize: vertical; }
   width: 100%;
   box-sizing: border-box;
 }
+.upload-notice {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #e6c7d1;
+  border-radius: 12px;
+  background: #fff7fa;
+  color: #681f37;
+}
+
+.upload-notice p {
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+.upload-notice small {
+  color: #765866;
+}
+
+.upload-notice[hidden] {
+  display: none;
+}
