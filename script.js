@@ -100,7 +100,28 @@ const serviceFields = {
       options: ["Pilih format", "Word (DOCX)", "PDF", "Excel (XLSX)", "Sesuai permintaan"] },
     { name: "tenggat", label: "Target selesai", type: "date" },
     { name: "rincianKetik", label: "Petunjuk atau rincian ketikan", type: "textarea", full: true, required: true }
+  ],
+  
+  "Wedding Organizer": [
+    { section: "DATA MEMPELAI" },
+    { name: "namaPria", label: "Nama Lengkap Mempelai Pria", required: true },
+    { name: "namaWanita", label: "Nama Lengkap Mempelai Wanita", required: true },
+    { name: "telepon", label: "Nomor WhatsApp Aktif", required: true, placeholder: "Contoh: 08123456789" },
+    
+    { section: "RENCANA ACARA" },
+    { name: "paketNama", label: "Pilihan Paket WO", type: "select", required: true,
+      options: ["Pilih Paket", "Paket Silver", "Paket Gold", "Paket Platinum", "Custom Paket"] },
+    { name: "hargaPaket", label: "Perkiraan Anggaran / Harga Paket (Rp)", type: "number", required: true },
+    { name: "tanggalAkad", label: "Tanggal Akad Nikah", type: "date", required: true },
+    { name: "tanggalResepsi", label: "Tanggal Resepsi Pernikahan", type: "date", required: true },
+    { name: "lokasi", label: "Lokasi / Tempat Acara", type: "textarea", full: true, required: true, placeholder: "Contoh: Gedung A / Rumah Mempelai Wanita" },
+    { name: "jumlahTamu", label: "Perkiraan Jumlah Tamu (Undangan)", type: "number", placeholder: "Contoh: 500" },
+    
+    { section: "LAYANAN TAMBAHAN & CATATAN" },
+    { name: "layananTambahan", label: "Layanan Tambahan yang Diinginkan", type: "textarea", full: true, placeholder: "Contoh: Katering tambahan, Live Music, Dokumentasi udara (Drone)" },
+    { name: "catatan", label: "Catatan atau Permintaan Khusus", type: "textarea", full: true }
   ]
+
 };
 
 /* Membuat kolom formulir secara otomatis */
