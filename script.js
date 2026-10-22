@@ -357,14 +357,45 @@ orderForm.addEventListener("submit", async event => {
     createdAtISO: new Date().toISOString()
   };
 
-  submitButton.disabled = true;
+   submitButton.disabled = true;
   submitButton.textContent = "Menyimpan pesanan...";
 
   try {
-    await setDoc(doc(db, "pesanan", order.id), {
-      ...order,
-      createdAt: serverTimestamp()
-    });
+    // Jalur penyimpanan bercabang (KODE BARU)
+    if (layanan === "Wedding Organizer") {
+      // Masuk ke koleksi khusus booking_wo sesuai kebutuhan File 2 Admin
+      await setDoc(doc(db, "booking_wo", order.id), {
+        ...order.detailData, // memuat namaPria, namaWanita, dll.
+        id: order.id,
+        bookingId: order.id,
+        status: order.status,
+        telepon: order.telepon,
+        createdAt: serverTimestamp()
+      });
+
+      // Simpan juga ke tracking khusus WO
+      await setDoc(doc(db, "booking_wo_tracking", order.id), {
+        bookingId: order.id,
+        status: order.status,
+        updatedAt: serverTimestamp()
+      });
+    } else {
+      // Jalur pesanan umum (Undangan, Makeup, Edit, Ketik) yang sudah ada sebelumnya
+      await setDoc(doc(db, "pesanan", order.id), {
+        ...order,
+        createdAt: serverTimestamp()
+      });
+
+      await setDoc(doc(db, "pelacakan", order.id), {
+        orderId: order.id,
+        layanan: order.layanan,
+        status: order.status,
+        updatedAt: serverTimestamp()
+      });
+    }
+
+    saveLocalOrder(order); // Baris kelanjutan bawaan script Anda
+
 
     /* Data pelacakan publik tidak menyimpan nama/nomor pelanggan */
     await setDoc(doc(db, "pelacakan", order.id), {
