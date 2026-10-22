@@ -89,37 +89,63 @@
       <div class="section-heading">
         <div><p class="eyebrow">FORMULIR</p><h2>Pemesanan jasa</h2></div>
       </div>
-      <form id="orderForm" class="form-card">
-        <div class="form-grid">
-          <label>Jenis layanan
-            <select name="layanan" id="serviceSelect" required>
-              <option value="">Pilih layanan</option>
-              <option>Undangan</option>
-              <option>Rias Makeup</option>
-              <option>Edit Dokumen</option>
-              <option>Jasa Ketik</option>
-            </select>
-          </label>
-          <label>Nama lengkap
-            <input name="nama" required maxlength="100" placeholder="Nama pemesan">
-          </label>
-          <label>Nomor WhatsApp
-            <input name="telepon" required inputmode="tel" maxlength="20" placeholder="08xxxxxxxxxx">
-          </label>
-          <label>Tanggal dibutuhkan
-            <input name="tanggal" type="date">
-          </label>
-          <label class="full">Rincian khusus layanan
-            <textarea name="rincian" id="serviceDetails" rows="5" required placeholder="Isi rincian pesanan Anda di sini."></textarea>
-          </label>
-          <label class="full">Catatan tambahan (opsional)
-            <textarea name="catatan" rows="3" placeholder="Referensi desain, alamat acara, jumlah halaman, dan lainnya."></textarea>
-          </label>
-        </div>
-        <p class="muted small">Jangan cantumkan kata sandi, PIN, atau informasi rahasia pada formulir.</p>
-        <button class="btn btn-primary btn-wide" id="submitOrder" type="submit">Kirim Pesanan</button>
-        <p id="orderMessage" class="message" role="status"></p>
-      </form>
+     
+<form id="orderForm" class="form-card">
+  <div class="form-grid">
+
+    <label>Jenis layanan
+      <select name="layanan" id="serviceSelect" required>
+        <option value="">Pilih layanan</option>
+        <option value="Undangan">Undangan Pernikahan</option>
+        <option value="Rias Makeup">Rias Makeup</option>
+        <option value="Edit Dokumen">Edit Dokumen</option>
+        <option value="Jasa Ketik">Jasa Ketik</option>
+      </select>
+    </label>
+
+    <label>Nama pemesan
+      <input name="nama" required maxlength="100"
+        placeholder="Nama lengkap pemesan">
+    </label>
+
+    <label>Nomor WhatsApp
+      <input name="telepon" required inputmode="tel"
+        maxlength="20" placeholder="08xxxxxxxxxx">
+    </label>
+
+    <label>Email (opsional)
+      <input name="email" type="email"
+        placeholder="email@contoh.com">
+    </label>
+
+  </div>
+
+  <div id="serviceSpecificFields">
+    <div class="empty-state">
+      Silakan pilih jenis layanan untuk menampilkan formulir khusus.
+    </div>
+  </div>
+
+  <div class="form-grid">
+    <label class="full">Catatan tambahan (opsional)
+      <textarea name="catatan" rows="3"
+        placeholder="Permintaan khusus atau informasi tambahan"></textarea>
+    </label>
+  </div>
+
+  <p class="muted small">
+    Pastikan semua data benar sebelum mengirim pesanan.
+    Jangan cantumkan kata sandi, PIN, atau informasi rahasia.
+  </p>
+
+  <button class="btn btn-primary btn-wide"
+    id="submitOrder" type="submit">
+    Kirim Pesanan
+  </button>
+
+  <p id="orderMessage" class="message" role="status"></p>
+</form>
+
     </section>
 
     <section id="riwayat" class="section">
