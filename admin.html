@@ -50,6 +50,76 @@
       </div>
 
       <section class="orders-panel">
+<!-- MANAJEMEN PAKET WEDDING ORGANIZER -->
+<section class="panel">
+  <h2>Pengaturan Paket Wedding Organizer</h2>
+  <p class="muted">
+    Admin dapat menambah paket, mengubah harga dan fasilitas,
+    serta mengaktifkan atau menonaktifkan paket.
+  </p>
+
+  <form id="woPackageForm">
+    <input type="hidden" id="woPackageId">
+
+    <label for="woPackageName">Nama paket</label>
+    <input id="woPackageName" required
+      placeholder="Contoh: Paket WO Silver">
+
+    <label for="woPackagePrice">Harga paket (Rp)</label>
+    <input id="woPackagePrice" type="number" min="0"
+      required placeholder="5000000">
+
+    <label for="woPackageFacilities">Fasilitas paket</label>
+    <textarea id="woPackageFacilities" rows="5" required
+      placeholder="Contoh: Koordinator acara, dekorasi, MC, dan lainnya"></textarea>
+
+    <label for="woPackageDescription">Deskripsi paket</label>
+    <textarea id="woPackageDescription" rows="3"
+      placeholder="Keterangan paket dan ketentuan layanan"></textarea>
+
+    <label>
+      <input id="woPackageActive" type="checkbox" checked>
+      Paket aktif dan tampil kepada pelanggan
+    </label>
+
+    <div class="order-actions">
+      <button class="btn btn-primary" type="submit" id="woPackageSave">
+        Simpan Paket
+      </button>
+      <button class="btn btn-outline" type="button" id="woPackageReset">
+        Bersihkan Form
+      </button>
+    </div>
+
+    <p id="woPackageMessage" class="message"></p>
+  </form>
+
+  <h3>Daftar Paket WO</h3>
+  <div id="woPackagesList">
+    <div class="empty-state">Paket akan ditampilkan di sini.</div>
+  </div>
+</section>
+
+<!-- DAFTAR BOOKING WEDDING ORGANIZER -->
+<section class="panel">
+  <h2>Booking Wedding Organizer</h2>
+  <p class="muted">
+    Lihat permintaan booking, data mempelai, tanggal acara,
+    paket pilihan, dan status konfirmasi.
+  </p>
+
+  <div class="order-actions">
+    <button class="btn btn-outline" type="button" id="woBookingReload">
+      Muat Ulang Booking
+    </button>
+  </div>
+
+  <p id="woBookingMessage" class="message"></p>
+  <div id="woBookingsList">
+    <div class="empty-state">Booking akan ditampilkan di sini.</div>
+  </div>
+</section>
+
         <div class="panel-heading">
           <div><h2>Daftar Pesanan</h2><p class="muted">Pilih pesanan untuk melihat rincian dan mengubah status.</p></div>
           <button id="reloadButton" class="btn btn-outline" type="button">Muat ulang</button>
