@@ -102,25 +102,23 @@ const serviceFields = {
     { name: "rincianKetik", label: "Petunjuk atau rincian ketikan", type: "textarea", full: true, required: true }
   ],
   
-  "Wedding Organizer": [
+   "Wedding Organizer": [
     { section: "DATA MEMPELAI" },
     { name: "namaPria", label: "Nama Lengkap Mempelai Pria", required: true },
     { name: "namaWanita", label: "Nama Lengkap Mempelai Wanita", required: true },
-    { name: "telepon", label: "Nomor WhatsApp Aktif", required: true, placeholder: "Contoh: 08123456789" },
     
     { section: "RENCANA ACARA" },
-    { name: "paketNama", label: "Pilihan Paket WO", type: "select", required: true,
-      options: ["Pilih Paket", "Paket Silver", "Paket Gold", "Paket Platinum", "Custom Paket"] },
+    { name: "paketNama", label: "Pilihan Paket WO", type: "select", required: true, options: [] }, // Dikosongkan untuk diisi dari Firestore
     { name: "hargaPaket", label: "Perkiraan Anggaran / Harga Paket (Rp)", type: "number", required: true },
     { name: "tanggalAkad", label: "Tanggal Akad Nikah", type: "date", required: true },
     { name: "tanggalResepsi", label: "Tanggal Resepsi Pernikahan", type: "date", required: true },
-    { name: "lokasi", label: "Lokasi / Tempat Acara", type: "textarea", full: true, required: true, placeholder: "Contoh: Gedung A / Rumah Mempelai Wanita" },
-    { name: "jumlahTamu", label: "Perkiraan Jumlah Tamu (Undangan)", type: "number", placeholder: "Contoh: 500" },
+    { name: "lokasi", label: "Lokasi / Tempat Acara", type: "textarea", full: true, required: true },
+    { name: "jumlahTamu", label: "Perkiraan Jumlah Tamu (Undangan)", type: "number" },
     
     { section: "LAYANAN TAMBAHAN & CATATAN" },
-    { name: "layananTambahan", label: "Layanan Tambahan yang Diinginkan", type: "textarea", full: true, placeholder: "Contoh: Katering tambahan, Live Music, Dokumentasi udara (Drone)" },
-    { name: "catatan", label: "Catatan atau Permintaan Khusus", type: "textarea", full: true }
+    { name: "layananTambahan", label: "Layanan Tambahan yang Diinginkan", type: "textarea", full: true },
   ]
+
 
 };
 
