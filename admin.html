@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#681f37">
+  <title>Admin - Laksana Jaya Digital</title>
+  <link rel="stylesheet" href="admin.css">
+  <script type="module" src="admin.js"></script>
+</head>
+<body>
+  <main class="admin-shell">
+    <section id="loginPanel" class="login-card">
+      <a class="back-link" href="index.html">← Kembali ke halaman pelanggan</a>
+      <div class="admin-logo">LJ</div>
+      <p class="eyebrow">AREA TERBATAS</p>
+      <h1>Login Admin</h1>
+      <p class="muted">Masuk untuk mengelola pesanan pelanggan.</p>
+
+      <form id="loginForm">
+        <label>Email admin
+          <input id="email" type="email" autocomplete="username" required placeholder="admin@email.com">
+        </label>
+        <label>Kata sandi
+          <input id="password" type="password" autocomplete="current-password" required placeholder="Masukkan kata sandi">
+        </label>
+        <button id="loginButton" class="btn btn-primary btn-wide" type="submit">Masuk ke Dashboard</button>
+        <p id="loginMessage" class="message" role="status"></p>
+      </form>
+    </section>
+
+    <section id="dashboardPanel" hidden>
+      <header class="admin-header">
+        <div>
+          <p class="eyebrow">LAKSANA JAYA DIGITAL</p>
+          <h1>Dashboard Pesanan</h1>
+          <p id="adminIdentity" class="muted"></p>
+        </div>
+        <div class="header-actions">
+          <a href="index.html" class="btn btn-outline">Lihat Website</a>
+          <button id="logoutButton" class="btn btn-primary" type="button">Keluar</button>
+        </div>
+      </header>
+
+      <div class="stats-grid">
+        <article class="stat-card"><span>Total pesanan</span><strong id="countAll">0</strong></article>
+        <article class="stat-card"><span>Menunggu konfirmasi</span><strong id="countPending">0</strong></article>
+        <article class="stat-card"><span>Sedang dikerjakan</span><strong id="countWorking">0</strong></article>
+        <article class="stat-card"><span>Selesai</span><strong id="countDone">0</strong></article>
+      </div>
+
+      <section class="orders-panel">
+        <div class="panel-heading">
+          <div><h2>Daftar Pesanan</h2><p class="muted">Pilih pesanan untuk melihat rincian dan mengubah status.</p></div>
+          <button id="reloadButton" class="btn btn-outline" type="button">Muat ulang</button>
+        </div>
+        <div class="filters">
+          <input id="searchInput" type="search" placeholder="Cari nomor, nama, atau layanan...">
+          <select id="statusFilter" aria-label="Filter status">
+            <option value="">Semua status</option>
+            <option>Menunggu konfirmasi</option>
+            <option>Dikonfirmasi</option>
+            <option>Sedang dikerjakan</option>
+            <option>Selesai</option>
+            <option>Dibatalkan</option>
+          </select>
+        </div>
+        <p id="dashboardMessage" class="message" role="status"></p>
+        <div id="ordersList" class="orders-list">
+          <div class="empty-state">Memuat pesanan...</div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="detailDialog" class="detail-dialog">
+    <div class="dialog-header">
+      <h2>Detail Pesanan</h2>
+      <button id="closeDialog" class="close-button" type="button" aria-label="Tutup">×</button>
+    </div>
+    <div id="detailContent"></div>
+    <form id="statusForm" class="status-form">
+      <label>Ubah status pesanan
+        <select id="newStatus" required>
+          <option>Menunggu konfirmasi</option>
+          <option>Dikonfirmasi</option>
+          <option>Sedang dikerjakan</option>
+          <option>Selesai</option>
+          <option>Dibatalkan</option>
+        </select>
+      </label>
+      <button id="saveStatusButton" class="btn btn-primary btn-wide" type="submit">Simpan Status</button>
+      <p id="statusMessage" class="message" role="status"></p>
+    </form>
+    <a id="customerWhatsApp" class="btn btn-outline btn-wide" target="_blank" rel="noopener noreferrer">Hubungi Pelanggan via WhatsApp</a>
+  </dialog>
+</body>
+</html>
