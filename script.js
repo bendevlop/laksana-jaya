@@ -254,6 +254,11 @@ function formatWA(order) {
     "",
     "Mohon konfirmasi pesanan ini."
   ].join("\n");
+  if (["Edit Dokumen", "Jasa Ketik"].includes(order.layanan)) {
+  message +=
+    "\n\nBERKAS: Saya akan melampirkan file " +
+    "yang akan diedit/diketik langsung di chat ini.";
+}
 }
 
 orderForm.addEventListener("submit", async event => {
