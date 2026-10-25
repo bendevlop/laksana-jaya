@@ -56,7 +56,7 @@ const serviceFields = {
 
     { section: "RESEPSI PERNIKAHAN" },
     { name: "tanggalResepsi", label: "Tanggal resepsi", type: "date", required: true },
-    { name: "jamResepsi", label: "Jam resepsi", type: "text", placeholder: "Contoh: 11.00–selesai", required: true },
+    { name: "jamResepsi", label: "Jam resepsi", type: "time", required: true },
    /* { name: "lokasiResepsi", label: "Tempat resepsi", required: true }, */
     { name: "alamatResepsi", label: "Alamat Resepsi", type: "textarea", full: true, placeholder: "Tempel link google maps", required: true },
 
