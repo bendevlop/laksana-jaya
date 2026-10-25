@@ -33,38 +33,41 @@ const serviceFields = {
     { section: "DATA MEMPELAI PRIA" },
     { name: "gelarPria", label: "Gelar mempelai pria (opsional)", placeholder: "Contoh: S.Pd." },
     { name: "namaPria", label: "Nama lengkap mempelai pria", required: true },
+    { name: "namaPria2", label: "Nama panggilan", required: true },
     { name: "ayahPria", label: "Nama ayah mempelai pria", required: true },
     { name: "ibuPria", label: "Nama ibu mempelai pria", required: true },
-    { name: "anakPria", label: "Anak ke-berapa mempelai pria", required: true, placeholder: "Contoh: Anak ke-2 dari 3 bersaudara" },
-    { name: "alamatPria", label: "Alamat mempelai pria", required: true, full: true, type: "textarea" },
+    { name: "anakPria", label: "Anak ke-", required: true, type: "number", placeholder: "Contoh: 1,2,3" },
+    { name: "alamatPria", label: "Alamat mempelai pria", required: true, full: true, placeholder: "Alamat lengkap", type: "textarea" },
 
     { section: "DATA MEMPELAI WANITA" },
     { name: "gelarWanita", label: "Gelar mempelai wanita (opsional)", placeholder: "Contoh: S.Pd." },
     { name: "namaWanita", label: "Nama lengkap mempelai wanita", required: true },
+    { name: "namaWanita2", label: "Nama panggilan", required: true },
+    { name: "ayahWanita", label: "Nama ayah mempelai wanita", required: true },
     { name: "ayahWanita", label: "Nama ayah mempelai wanita", required: true },
     { name: "ibuWanita", label: "Nama ibu mempelai wanita", required: true },
-    { name: "anakWanita", label: "Anak ke-berapa mempelai wanita", required: true, placeholder: "Contoh: Anak ke-1 dari 2 bersaudara" },
-    { name: "alamatWanita", label: "Alamat mempelai wanita", required: true, full: true, type: "textarea" },
-
+    { name: "anakWanita", label: "Anak ke-", required: true, type: "number", placeholder: "Contoh: 1,2,3" },
+    { name: "alamatWanita", label: "Alamat mempelai wanita", required: true, full: true,  placeholder: "Alamat lengkap", type: "textarea" },
+ 
     { section: "AKAD NIKAH" },
     { name: "tanggalAkad", label: "Tanggal akad", type: "date", required: true },
     { name: "jamAkad", label: "Jam akad", type: "time", required: true },
-    { name: "lokasiAkad", label: "Tempat akad", required: true },
-    { name: "alamatAkad", label: "Alamat lengkap akad", type: "textarea", full: true, required: true },
+    /* { name: "lokasiAkad", label: "Tempat akad", required: true }, */
+    { name: "alamatAkad", label: "Alamat Akad", type: "textarea", full: true, placeholder: "Tempel link google maps", required: true },
 
     { section: "RESEPSI PERNIKAHAN" },
     { name: "tanggalResepsi", label: "Tanggal resepsi", type: "date", required: true },
     { name: "jamResepsi", label: "Jam resepsi", type: "text", placeholder: "Contoh: 11.00–selesai", required: true },
-    { name: "lokasiResepsi", label: "Tempat resepsi", required: true },
-    { name: "alamatResepsi", label: "Alamat lengkap resepsi", type: "textarea", full: true, required: true },
+   /* { name: "lokasiResepsi", label: "Tempat resepsi", required: true }, */
+    { name: "alamatResepsi", label: "Alamat Resepsi", type: "textarea", full: true, placeholder: "Tempel link google maps", required: true },
 
     { section: "DETAIL CETAK DAN DESAIN" },
     { name: "modelUndangan", label: "Model undangan", type: "select", required: true,
-      options: ["Pilih model", "Undangan cetak lipat", "Undangan satu lembar", "Undangan digital", "Undangan custom"] },
-    { name: "jumlahUndangan", label: "Jumlah undangan", type: "number", placeholder: "Contoh: 200" },
-    { name: "warnaUndangan", label: "Warna atau tema desain", placeholder: "Contoh: Burgundy dan gold" },
+      options: ["Pilih model", "Undangan cetak", "Undangan digital", "Undangan cetak & digital"] },
+    { name: "jumlahUndangan", label: "Jumlah undangan", type: "number", min:"50", placeholder: "Contoh: 200" },
+   /* { name: "warnaUndangan", label: "Warna atau tema desain", placeholder: "Contoh: Burgundy dan gold" }, */
     { name: "turutMengundang", label: "Keluarga yang turut mengundang", type: "textarea", full: true },
-    { name: "teksTambahan", label: "Doa atau teks tambahan", type: "textarea", full: true }
+  /*{ name: "teksTambahan", label: "Doa atau teks tambahan", type: "textarea", full: true }*/
   ],
 
   "Rias Makeup": [
@@ -72,7 +75,7 @@ const serviceFields = {
       options: ["Pilih layanan", "Makeup akad", "Makeup wedding", "Makeup undangan", "Makeup wisuda", "Makeup pesta", "Lainnya"] },
     { name: "tanggal", label: "Tanggal acara", type: "date", required: true },
     { name: "jamAcara", label: "Jam mulai makeup", type: "time", required: true },
-    { name: "lokasiMakeup", label: "Alamat lokasi makeup/acara", type: "textarea", full: true, required: true },
+    { name: "lokasiMakeup", label: "Alamat lokasi makeup/acara", type: "textarea", full: true, placeholder:"Alamat/link goole maps", required: true },
     { name: "jumlahOrang", label: "Jumlah orang yang dirias", type: "number", required: true },
     { name: "paketMakeup", label: "Paket makeup yang diinginkan", placeholder: "Tanyakan paket dan harga kepada admin" },
     { name: "permintaanMakeup", label: "Permintaan khusus", type: "textarea", full: true }
