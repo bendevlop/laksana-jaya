@@ -244,16 +244,27 @@ function renderPublicWOPackages() {
   }
   container.innerHTML = activePackages.map(pkg => `
     <article class="service-card wo-package-card">
-      <div class="service-icon">💍</div>
+      <div class="wo-card-top"><div class="service-icon" aria-hidden="true">💍</div><span class="wo-package-badge">PAKET WO</span></div>
       <h3>${escapeHTML(pkg.nama || "Paket Wedding Organizer")}</h3>
       <p class="wo-package-price">${escapeHTML(new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(Number(pkg.harga) || 0))}</p>
-      <p>${escapeHTML(pkg.deskripsi || "Paket layanan Wedding Organizer.")}</p>
-      <p><strong>Fasilitas:</strong><br>${escapeHTML(pkg.fasilitas || "Hubungi admin untuk detail.").replace(/\n/g, "<br>")}</p>
-      <button class="btn btn-primary wo-book-package" type="button" data-id="${escapeHTML(pkg.id)}">Pilih Paket Ini</button>
+      <p class="wo-package-description">${escapeHTML(pkg.deskripsi || "Paket layanan Wedding Organizer.")}</p>
+      <div class="wo-package-details" hidden><div class="wo-detail-label">✨ Fasilitas paket</div><p class="wo-package-facilities">${escapeHTML(pkg.fasilitas || "Hubungi admin untuk detail.").replace(/\n/g, "<br>")}</p></div>
+      <div class="wo-card-actions"><button class="btn btn-outline wo-toggle-details" type="button" aria-expanded="false">Lihat detail ＋</button><button class="btn btn-primary wo-book-package" type="button" data-id="${escapeHTML(pkg.id)}">Pilih Paket</button></div>
     </article>
   `).join("");
   container.querySelectorAll(".wo-book-package").forEach(button => {
     button.addEventListener("click", () => chooseWOPackage(button.dataset.id));
+  });
+  container.querySelectorAll(".wo-toggle-details").forEach(button => {
+    button.addEventListener("click", () => {
+      const card = button.closest(".wo-package-card");
+      const details = card.querySelector(".wo-package-details");
+      const expanded = button.getAttribute("aria-expanded") === "true";
+      details.hidden = expanded;
+      button.setAttribute("aria-expanded", String(!expanded));
+      button.textContent = expanded ? "Lihat detail ＋" : "Tutup detail −";
+      card.classList.toggle("is-expanded", !expanded);
+    });
   });
 }
 
