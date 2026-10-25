@@ -44,7 +44,6 @@ const serviceFields = {
     { name: "namaWanita", label: "Nama lengkap mempelai wanita", required: true },
     { name: "namaWanita2", label: "Nama panggilan", required: true },
     { name: "ayahWanita", label: "Nama ayah mempelai wanita", required: true },
-    { name: "ayahWanita", label: "Nama ayah mempelai wanita", required: true },
     { name: "ibuWanita", label: "Nama ibu mempelai wanita", required: true },
     { name: "anakWanita", label: "Anak ke-", required: true, type: "number", placeholder: "Contoh: 1,2,3" },
     { name: "alamatWanita", label: "Alamat mempelai wanita", required: true, full: true,  placeholder: "Alamat lengkap", type: "textarea" },
