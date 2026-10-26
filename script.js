@@ -102,6 +102,29 @@ const serviceFields = {
       options: ["Pilih format", "Word (DOCX)", "PDF", "Excel (XLSX)", "Sesuai permintaan"] },
     { name: "tenggat", label: "Target selesai", type: "date" },
     { name: "rincianKetik", label: "Petunjuk atau rincian ketikan", type: "textarea", full: true, required: true }
+  ],
+
+  "Servis Printer": [
+    { section: "INFORMASI PRINTER" },
+    { name: "merekPrinter", label: "Merek printer", type: "select", required: true,
+      options: ["Pilih merek", "Epson", "Canon", "HP", "Brother", "Fuji Xerox", "Samsung", "Lainnya / tidak tahu"] },
+    { name: "modelPrinter", label: "Model / tipe printer", placeholder: "Contoh: Epson L3110", required: true },
+    { name: "jenisPrinter", label: "Jenis printer", type: "select", required: true,
+      options: ["Pilih jenis", "Inkjet / tinta", "Laser", "Dot matrix", "Thermal / struk", "Tidak tahu"] },
+    { name: "kondisiPrinter", label: "Kondisi printer saat ini", type: "select", required: true,
+      options: ["Pilih kondisi", "Menyala normal", "Menyala tetapi tidak bisa mencetak", "Tidak bisa menyala", "Lampu indikator berkedip", "Mengeluarkan suara / macet", "Lainnya"] },
+    { section: "DETAIL KERUSAKAN / KENDALA" },
+    { name: "gejalaKerusakan", label: "Gejala atau pesan error", type: "textarea", full: true, required: true,
+      placeholder: "Contoh: hasil cetak bergaris, tinta tidak keluar, kertas macet, kode error..." },
+    { name: "mulaiBermasalah", label: "Sejak kapan terjadi?", placeholder: "Contoh: sejak kemarin / setelah isi tinta" },
+    { name: "upayaPerbaikan", label: "Upaya yang sudah dicoba", type: "textarea", full: true,
+      placeholder: "Contoh: restart printer, cleaning, ganti kabel, atau belum mencoba" },
+    { name: "lokasiServis", label: "Lokasi / alamat perangkat", type: "textarea", full: true, required: true,
+      placeholder: "Alamat lengkap atau lokasi printer berada" },
+    { name: "metodeServis", label: "Metode servis yang diinginkan", type: "select", required: true,
+      options: ["Pilih metode", "Dibawa ke tempat servis", "Minta kunjungan teknisi", "Konsultasi dahulu"] },
+    { name: "waktuDihubungi", label: "Waktu yang nyaman dihubungi", placeholder: "Contoh: pukul 09.00–15.00" },
+    { name: "fotoPrinter", label: "Unggah foto printer / hasil cetak / kode error (maks. 5 MB)", type: "file", accept: "image/jpeg,image/png,image/webp", required: true, full: true }
   ]
 };
 
@@ -131,6 +154,9 @@ function renderServiceFields() {
 
       if (field.type === "textarea") {
         control = `<textarea name="${field.name}" rows="3" ${required} ${placeholder}></textarea>`;
+      } else if (field.type === "file") {
+        control = `<input name="${field.name}" type="file" accept="${field.accept}" ${required} data-printer-photo>
+        <small class="muted">Pilih foto yang jelas. Foto akan dipilih di formulir; setelah WhatsApp terbuka, lampirkan foto tersebut di chat agar diterima admin.</small><div id="printerPhotoPreview" class="printer-photo-preview" hidden><img alt="Pratinjau foto printer"><span></span></div>`;
       } else if (field.type === "select") {
         control = `<select name="${field.name}" ${required}>${
           field.options.map((option, index) =>
@@ -148,6 +174,21 @@ function renderServiceFields() {
 
   fieldsContainer.querySelectorAll('input[type="date"]').forEach(input => {
     input.min = new Date().toISOString().slice(0, 10);
+  });
+  const photoInput = fieldsContainer.querySelector("[data-printer-photo]");
+  if (photoInput) photoInput.addEventListener("change", () => {
+    const file = photoInput.files && photoInput.files[0];
+    const preview = fieldsContainer.querySelector("#printerPhotoPreview");
+    if (!file) { preview.hidden = true; return; }
+    if (!file.type.startsWith("image/") || file.size > 5 * 1024 * 1024) {
+      photoInput.value = "";
+      preview.hidden = true;
+      alert("Pilih foto JPG, PNG, atau WEBP dengan ukuran maksimal 5 MB.");
+      return;
+    }
+    preview.querySelector("img").src = URL.createObjectURL(file);
+    preview.querySelector("span").textContent = file.name + " · " + (file.size / 1024 / 1024).toFixed(2) + " MB";
+    preview.hidden = false;
   });
 }
 
@@ -485,6 +526,13 @@ function formatWA(order) {
     "Mohon konfirmasi pesanan ini."
   ];
 
+  if (order.layanan === "Servis Printer" && order.detailData?.fotoPrinter) {
+    message.push(
+      "", "FOTO PRINTER", `Nama file yang dipilih: ${order.detailData.fotoPrinter}`,
+      "Mohon lampirkan foto printer / hasil cetak / kode error secara manual di chat WhatsApp ini."
+    );
+  }
+
   if (["Edit Dokumen", "Jasa Ketik"].includes(order.layanan)) {
     message.push(
       "",
@@ -525,6 +573,18 @@ orderForm.addEventListener("submit", async event => {
 
   for (const field of serviceFields[layanan]) {
     if (!field.name) continue;
+    if (field.type === "file") {
+      const file = formData.get(field.name);
+      if (file instanceof File && file.size > 0) {
+        if (file.size > 5 * 1024 * 1024 || !["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+          orderMessage.className = "message error";
+          orderMessage.textContent = "Foto harus berformat JPG, PNG, atau WEBP dan maksimal 5 MB.";
+          return;
+        }
+        detailData[field.name] = file.name;
+      }
+      continue;
+    }
     const value = String(formData.get(field.name) || "").trim();
     if (value) detailData[field.name] = value;
   }
