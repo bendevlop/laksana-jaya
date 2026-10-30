@@ -100,3 +100,12 @@ input:focus, select:focus { border-color: var(--wine); box-shadow: 0 0 0 3px #68
   .wo-booking-controls { align-items: stretch; }
   .wo-booking-controls select { flex-basis: 100%; }
 }
+
+.panel { background:#fff; border:1px solid var(--line); border-radius:17px; padding:22px; margin-bottom:20px; }
+.panel form { max-width:760px; }
+.panel textarea { width:100%; border:1px solid #ded3d8; border-radius:10px; padding:12px; font:inherit; }
+.panel label:has(input[type="checkbox"]) { flex-direction:row; align-items:center; gap:9px; }
+.panel label input[type="checkbox"] { width:auto; }
+.media-admin-row { display:flex; align-items:flex-start; gap:14px; min-width:0; }
+.admin-thumb { width:86px; height:100px; object-fit:cover; border-radius:10px; background:#f5edf0; flex:none; }
+@media(max-width:650px){ .panel{padding:16px;} .order-card{grid-template-columns:1fr;} .order-card .order-actions{flex-direction:row; min-width:0;} .admin-thumb{width:70px;height:82px;} }

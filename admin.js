@@ -56,6 +56,8 @@ const $ = selector => document.querySelector(selector);
 let allOrders = [];
 let allPackages = [];
 let allBookings = [];
+let allGallery = [];
+let allTestimonials = [];
 let activeOrderId = null;
 let loadingOrders = false;
 let loadingPackages = false;
@@ -192,7 +194,9 @@ onAuthStateChanged(auth, async user => {
     await Promise.all([
       loadOrders(),
       loadPackages(),
-      loadBookings()
+      loadBookings(),
+      loadGallery(),
+      loadTestimonials()
     ]);
   } else {
     if (user) await signOut(auth);
@@ -784,3 +788,77 @@ async function saveBookingStatus(id) {
 }
 
 $("#woBookingReload").addEventListener("click", loadBookings);
+
+
+/* =========================================
+   GALERI RIAS DAN TESTIMONI PELANGGAN
+   Koleksi: galeri_rias, testimoni
+========================================= */
+
+async function compressImage(file) {
+  if (!file) return "";
+  if (!file.type.startsWith("image/")) throw new Error("File harus berupa gambar.");
+  if (file.size > 8 * 1024 * 1024) throw new Error("Ukuran foto maksimal 8 MB.");
+  const dataUrl = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("Foto gagal dibaca."));
+    reader.readAsDataURL(file);
+  });
+  const image = await new Promise((resolve, reject) => {
+    const img = new Image(); img.onload = () => resolve(img); img.onerror = () => reject(new Error("Format foto tidak dapat dibuka.")); img.src = dataUrl;
+  });
+  const scale = Math.min(1, 1200 / Math.max(image.width, image.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(image.width * scale));
+  canvas.height = Math.max(1, Math.round(image.height * scale));
+  canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+  const compressed = canvas.toDataURL("image/jpeg", 0.72);
+  if (compressed.length > 850000) throw new Error("Foto masih terlalu besar setelah kompresi. Pilih foto dengan resolusi atau ukuran lebih kecil.");
+  return compressed;
+}
+
+function renderManagedItems(items, container, kind) {
+  if (!items.length) { container.innerHTML = '<div class="empty-state">Belum ada data.</div>'; return; }
+  container.innerHTML = items.map(item => `
+    <article class="order-card">
+      <div class="media-admin-row">${item.foto ? `<img class="admin-thumb" src="${item.foto}" alt="Foto">` : ''}<div><h3>${escapeHTML(kind === "gallery" ? item.judul : item.nama)}</h3><p>${escapeHTML(kind === "gallery" ? (item.keterangan || "") : item.isi)}</p><span class="status-pill">${item.aktif ? "Tampil" : "Disembunyikan"}</span></div></div>
+      <div class="order-actions"><button class="btn btn-primary" type="button" data-edit="${escapeHTML(item.id)}">Edit</button><button class="btn btn-outline" type="button" data-delete="${escapeHTML(item.id)}">Hapus</button></div>
+    </article>`).join("");
+  container.querySelectorAll("[data-edit]").forEach(btn => btn.addEventListener("click", () => kind === "gallery" ? editGallery(btn.dataset.edit) : editTestimonial(btn.dataset.edit)));
+  container.querySelectorAll("[data-delete]").forEach(btn => btn.addEventListener("click", () => kind === "gallery" ? deleteManagedItem("galeri_rias", btn.dataset.delete, loadGallery) : deleteManagedItem("testimoni", btn.dataset.delete, loadTestimonials)));
+}
+
+async function loadGallery() {
+  try { requireAdmin(); const snap = await getDocs(collection(db, "galeri_rias")); allGallery = snap.docs.map(d => ({id:d.id,...d.data()})); allGallery.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)); renderManagedItems(allGallery, $("#galleryAdminList"), "gallery"); }
+  catch(e) { console.error(e); $("#galleryAdminList").innerHTML='<div class="empty-state">Galeri gagal dimuat. Periksa Firestore Rules.</div>'; showMessage($("#galleryMessage"), "Gagal memuat galeri: "+e.message, "error"); }
+}
+async function loadTestimonials() {
+  try { requireAdmin(); const snap = await getDocs(collection(db, "testimoni")); allTestimonials = snap.docs.map(d => ({id:d.id,...d.data()})); allTestimonials.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)); renderManagedItems(allTestimonials, $("#testimonialAdminList"), "testimonial"); }
+  catch(e) { console.error(e); $("#testimonialAdminList").innerHTML='<div class="empty-state">Testimoni gagal dimuat. Periksa Firestore Rules.</div>'; showMessage($("#testimonialMessage"), "Gagal memuat testimoni: "+e.message, "error"); }
+}
+function resetGallery() { $("#galleryForm").reset(); $("#galleryId").value=""; $("#gallerySave").textContent="Simpan Foto"; $("#galleryActive").checked=true; }
+function resetTestimonial() { $("#testimonialForm").reset(); $("#testimonialId").value=""; $("#testimonialSave").textContent="Simpan Testimoni"; $("#testimonialActive").checked=true; }
+function editGallery(id) { const x=allGallery.find(v=>v.id===id); if(!x)return; $("#galleryId").value=id; $("#galleryTitle").value=x.judul||""; $("#galleryDescription").value=x.keterangan||""; $("#galleryActive").checked=x.aktif===true; $("#gallerySave").textContent="Simpan Perubahan"; $("#galleryForm").scrollIntoView({behavior:"smooth"}); }
+function editTestimonial(id) { const x=allTestimonials.find(v=>v.id===id); if(!x)return; $("#testimonialId").value=id; $("#testimonialName").value=x.nama||""; $("#testimonialText").value=x.isi||""; $("#testimonialActive").checked=x.aktif===true; $("#testimonialSave").textContent="Simpan Perubahan"; $("#testimonialForm").scrollIntoView({behavior:"smooth"}); }
+async function deleteManagedItem(collectionName,id,reload) { if(!confirm("Hapus konten ini?"))return; try { requireAdmin(); await deleteDoc(doc(db,collectionName,id)); await reload(); } catch(e) { alert("Gagal menghapus: "+e.message); } }
+
+$("#galleryForm").addEventListener("submit", async e => {
+  e.preventDefault(); const btn=$("#gallerySave"); btn.disabled=true;
+  try { requireAdmin(); const id=$("#galleryId").value; const old=allGallery.find(x=>x.id===id); const file=$("#galleryImage").files[0]; const foto=file ? await compressImage(file) : (old?.foto||""); if(!foto) throw new Error("Pilih foto hasil rias terlebih dahulu.");
+    const data={judul:$("#galleryTitle").value.trim(),keterangan:$("#galleryDescription").value.trim(),foto,aktif:$("#galleryActive").checked,updatedAt:serverTimestamp()};
+    if(id) await updateDoc(doc(db,"galeri_rias",id),data); else await setDoc(doc(collection(db,"galeri_rias")),{...data,createdAt:serverTimestamp()});
+    resetGallery(); await loadGallery(); showMessage($("#galleryMessage"),"Foto galeri berhasil disimpan.","success");
+  } catch(err) { console.error(err); showMessage($("#galleryMessage"),err.message||"Gagal menyimpan foto.","error"); } finally { btn.disabled=false; btn.textContent=$("#galleryId").value?"Simpan Perubahan":"Simpan Foto"; }
+});
+$("#testimonialForm").addEventListener("submit", async e => {
+  e.preventDefault(); const btn=$("#testimonialSave"); btn.disabled=true;
+  try { requireAdmin(); const id=$("#testimonialId").value; const old=allTestimonials.find(x=>x.id===id); const file=$("#testimonialImage").files[0]; const foto=file ? await compressImage(file) : (old?.foto||"");
+    const data={nama:$("#testimonialName").value.trim(),isi:$("#testimonialText").value.trim(),foto,aktif:$("#testimonialActive").checked,updatedAt:serverTimestamp()};
+    if(!data.nama||!data.isi) throw new Error("Nama dan isi testimoni wajib diisi.");
+    if(id) await updateDoc(doc(db,"testimoni",id),data); else await setDoc(doc(collection(db,"testimoni")),{...data,createdAt:serverTimestamp()});
+    resetTestimonial(); await loadTestimonials(); showMessage($("#testimonialMessage"),"Testimoni berhasil disimpan.","success");
+  } catch(err) { console.error(err); showMessage($("#testimonialMessage"),err.message||"Gagal menyimpan testimoni.","error"); } finally { btn.disabled=false; btn.textContent=$("#testimonialId").value?"Simpan Perubahan":"Simpan Testimoni"; }
+});
+$("#galleryReset").addEventListener("click",resetGallery);
+$("#testimonialReset").addEventListener("click",resetTestimonial);

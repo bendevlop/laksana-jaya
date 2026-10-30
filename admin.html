@@ -100,6 +100,40 @@
   </div>
 </section>
 
+
+<!-- GALERI RIAS & TESTIMONI -->
+<section class="panel">
+  <h2>Galeri Hasil Rias Makeup</h2>
+  <p class="muted">Unggah foto contoh atau hasil rias. Foto akan dikompres otomatis sebelum disimpan.</p>
+  <form id="galleryForm">
+    <input type="hidden" id="galleryId">
+    <label>Judul foto<input id="galleryTitle" maxlength="90" required placeholder="Contoh: Makeup Pengantin Adat Sunda"></label>
+    <label>Keterangan<textarea id="galleryDescription" rows="2" maxlength="400" placeholder="Keterangan singkat (opsional)"></textarea></label>
+    <label>Foto hasil rias<input id="galleryImage" type="file" accept="image/*"></label>
+    <p class="muted">Maksimal 8 MB sebelum kompresi. Saat mengedit, foto lama tetap digunakan jika tidak memilih foto baru.</p>
+    <label><input id="galleryActive" type="checkbox" checked> Tampilkan kepada pelanggan</label>
+    <div class="order-actions"><button class="btn btn-primary" id="gallerySave" type="submit">Simpan Foto</button><button class="btn btn-outline" id="galleryReset" type="button">Bersihkan Form</button></div>
+    <p id="galleryMessage" class="message" role="status"></p>
+  </form>
+  <div id="galleryAdminList" class="orders-list"><div class="empty-state">Galeri akan ditampilkan di sini.</div></div>
+</section>
+
+<section class="panel">
+  <h2>Testimoni Pelanggan</h2>
+  <p class="muted">Masukkan nama pelanggan, ulasan, dan foto opsional.</p>
+  <form id="testimonialForm">
+    <input type="hidden" id="testimonialId">
+    <label>Nama pelanggan<input id="testimonialName" maxlength="80" required placeholder="Contoh: Ibu Siti"></label>
+    <label>Testimoni<textarea id="testimonialText" rows="4" maxlength="1000" required placeholder="Tuliskan pengalaman pelanggan..."></textarea></label>
+    <label>Foto testimoni (opsional)<input id="testimonialImage" type="file" accept="image/*"></label>
+    <p class="muted">Maksimal 8 MB sebelum kompresi. Foto lama tetap dipakai jika tidak memilih foto baru saat mengedit.</p>
+    <label><input id="testimonialActive" type="checkbox" checked> Tampilkan kepada pelanggan</label>
+    <div class="order-actions"><button class="btn btn-primary" id="testimonialSave" type="submit">Simpan Testimoni</button><button class="btn btn-outline" id="testimonialReset" type="button">Bersihkan Form</button></div>
+    <p id="testimonialMessage" class="message" role="status"></p>
+  </form>
+  <div id="testimonialAdminList" class="orders-list"><div class="empty-state">Testimoni akan ditampilkan di sini.</div></div>
+</section>
+
 <!-- DAFTAR BOOKING WEDDING ORGANIZER -->
 <section class="panel">
   <h2>Booking Wedding Organizer</h2>

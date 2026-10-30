@@ -1,0 +1,52 @@
+PANDUAN FITUR GALERI RIAS & TESTIMONI - LAKSANA JAYA DIGITAL
+
+FITUR YANG DITAMBAHKAN
+1. Dashboard admin: tambah, edit, hapus, dan sembunyikan/tampilkan foto galeri rias.
+2. Dashboard admin: tambah, edit, hapus, dan sembunyikan/tampilkan testimoni teks/foto.
+3. Halaman pelanggan: bagian Galeri Hasil Rias dan Testimoni Pelanggan.
+4. Foto dikompres di browser menjadi JPEG (maksimal sisi 1200px) sebelum disimpan di Firestore.
+   Ini menghindari keharusan mengaktifkan Firebase Storage untuk implementasi ini.
+   Batas ukuran file sebelum kompresi: 8 MB. Hasil kompresi dibatasi agar dokumen Firestore
+   tetap di bawah batas ukuran dokumen. Untuk jumlah foto sangat banyak, sebaiknya pindah
+   ke Cloudinary atau Firebase Storage.
+
+CARA MEMASANG
+1. Ekstrak ZIP ini dan uji dahulu di salinan repositori, jangan langsung menimpa website aktif.
+2. Upload semua file hasil ekstrak ke repositori GitHub Pages dengan mempertahankan nama/path.
+3. Buka Firebase Console > Firestore Database > Rules.
+4. Gabungkan blok aturan di bawah ke dalam rules yang sudah ada. Jangan menghapus aturan
+   pesanan, booking_wo, wo_paket, pelacakan, atau koleksi lain yang sudah digunakan.
+5. Klik Publish.
+6. Buka admin.html, login dengan akun admin yang sudah terdaftar.
+7. Isi Galeri Hasil Rias dan Testimoni Pelanggan. Coba simpan satu konten uji, lalu buka
+   index.html dari browser lain/incognito untuk memastikan konten tampil kepada pelanggan.
+
+BLOK FIRESTORE RULES TAMBAHAN
+Masukkan blok match berikut di dalam service cloud.firestore { match /databases/{database}/documents { ... } }
+yang sudah ada. Jika sudah ada match untuk koleksi ini, gabungkan kondisi dengan hati-hati,
+jangan membuat aturan yang saling bertentangan.
+
+function isLaksanaJayaAdmin() {
+  return request.auth != null
+    && request.auth.token.email == 'bunyamintheaa86@gmail.com';
+}
+
+match /galeri_rias/{itemId} {
+  allow read: if isLaksanaJayaAdmin() || resource.data.aktif == true;
+  allow create, update, delete: if isLaksanaJayaAdmin();
+}
+
+match /testimoni/{itemId} {
+  allow read: if isLaksanaJayaAdmin() || resource.data.aktif == true;
+  allow create, update, delete: if isLaksanaJayaAdmin();
+}
+
+CATATAN PENTING
+- Firestore Rules bersifat gabungan OR antar-match yang cocok. Pastikan tidak ada aturan lama
+  yang memberi akses write publik ke koleksi galeri_rias atau testimoni.
+- Email admin pada rules harus sama dengan email admin yang diizinkan dalam admin.js.
+- Konten hanya tampil di website jika checkbox "Tampilkan kepada pelanggan" dicentang.
+- Foto disimpan sebagai data JPEG terkompresi di dokumen Firestore. Hindari foto berukuran
+  sangat besar dan terlalu banyak foto pada satu dokumen (setiap foto berada di dokumennya
+  sendiri).
+- Fitur pesanan, booking WO, dan paket WO yang sudah ada tidak diubah alur datanya.

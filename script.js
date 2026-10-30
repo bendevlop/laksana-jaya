@@ -1,7 +1,7 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
 import {
-  getFirestore, doc, setDoc, getDoc, getDocs, collection, serverTimestamp
+  getFirestore, doc, setDoc, getDoc, getDocs, collection, serverTimestamp, query, where
 } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
 
 /* Firebase Laksana Jaya */
@@ -741,3 +741,28 @@ renderServiceFields();
 renderHistory();
 updateFileWhatsAppNotice();
 loadPublicWOPackages();
+
+
+/* Galeri hasil rias dan testimoni publik */
+function safeImageMarkup(src, alt, cls="") {
+  if (!src) return "";
+  return `<img class="${cls}" src="${escapeHTML(src)}" alt="${escapeHTML(alt)}" loading="lazy">`;
+}
+async function loadPublicShowcase() {
+  const galleryEl=$("#publicGallery"), testimonialEl=$("#publicTestimonials");
+  try {
+    const [gallerySnap,testimonialSnap]=await Promise.all([
+      getDocs(query(collection(db,"galeri_rias"),where("aktif","==",true))),
+      getDocs(query(collection(db,"testimoni"),where("aktif","==",true)))
+    ]);
+    const gallery=gallerySnap.docs.map(d=>d.data()).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    const testimonials=testimonialSnap.docs.map(d=>d.data()).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    galleryEl.innerHTML=gallery.length?gallery.map(item=>`<article class="showcase-card">${safeImageMarkup(item.foto,item.judul,"showcase-photo")}<div class="showcase-copy"><h3>${escapeHTML(item.judul||"Hasil Rias")}</h3>${item.keterangan?`<p>${escapeHTML(item.keterangan)}</p>`:""}</div></article>`).join(""):'<div class="empty-state">Galeri hasil rias akan segera hadir.</div>';
+    testimonialEl.innerHTML=testimonials.length?testimonials.map(item=>`<article class="testimonial-card">${item.foto?safeImageMarkup(item.foto,"Foto testimoni pelanggan","testimonial-photo"):""}<div class="testimonial-quote">“${escapeHTML(item.isi||"")}”</div><strong>${escapeHTML(item.nama||"Pelanggan Laksana Jaya")}</strong></article>`).join(""):'<div class="empty-state">Testimoni pelanggan akan segera hadir.</div>';
+  } catch(error) {
+    console.error("Gagal memuat galeri/testimoni:",error);
+    galleryEl.innerHTML='<div class="empty-state">Galeri belum dapat dimuat.</div>';
+    testimonialEl.innerHTML='<div class="empty-state">Testimoni belum dapat dimuat.</div>';
+  }
+}
+loadPublicShowcase();
